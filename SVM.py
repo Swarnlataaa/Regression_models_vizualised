@@ -1,22 +1,41 @@
-from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import svm
 
-# Load your dataset (X: features, y: labels)
-X, y = load_dataset()
+# Generate some example data for visualization
+np.random.seed(0)
+X = np.random.randn(200, 2)
+y = np.logical_xor(X[:, 0] > 0, X[:, 1] > 0)
 
-# Split the dataset into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Create an SVM classifier
+svm_classifier = svm.SVC(kernel='linear')
+svm_classifier.fit(X, y)
 
-# Create an SVM classifier object
-svm = SVC(kernel='linear', C=1.0)
+# Create a meshgrid to plot the decision boundary
+h = 0.02  # step size in the mesh
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
 
-# Train the model
-svm.fit(X_train, y_train)
+# Predict the class for each meshgrid point
+Z = svm_classifier.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
 
-# Make predictions on the test set
-y_pred = svm.predict(X_test)
+# Create a contour plot to visualize the decision boundary
+plt.contourf(xx, yy, Z, cmap=plt.cm.Paired, alpha=0.8)
 
-# Calculate accuracy
-accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy:", accuracy)
+# Plot the training points
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Paired, edgecolors='k')
+
+# Highlight the support vectors
+support_vectors = svm_classifier.support_vectors_
+plt.scatter(support_vectors[:, 0], support_vectors[:, 1], s=100,
+            facecolors='none', edgecolors='k')
+
+# Set labels and title
+plt.xlabel('X1')
+plt.ylabel('X2')
+plt.title('SVM Classifier')
+
+# Show the plot
+plt.show()
