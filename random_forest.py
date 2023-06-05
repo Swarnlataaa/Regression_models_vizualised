@@ -1,22 +1,27 @@
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Load your dataset (X: features, y: target values)
-X, y = load_dataset()
+# Generate some example data for visualization
+X = np.arange(0, 10, 0.1).reshape(-1, 1)
+y_true = np.sin(X).ravel()
 
-# Split the dataset into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Train the Random Forest model (replace this with your actual training code)
+rf_reg.fit(X, y_true)
 
-# Create a Random Forest Regressor object
-rf_reg = RandomForestRegressor(n_estimators=100, max_depth=10)
+# Make predictions on the data points
+y_pred = rf_reg.predict(X)
 
-# Train the model
-rf_reg.fit(X_train, y_train)
+# Plot the true values and predicted values
+plt.plot(X, y_true, label='True Values', color='blue')
+plt.plot(X, y_pred, label='Predicted Values', color='red')
 
-# Make predictions on the test set
-y_pred = rf_reg.predict(X_test)
+# Set labels and title
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('Random Forest Regression')
 
-# Calculate mean squared error
-mse = mean_squared_error(y_test, y_pred)
-print("Mean Squared Error:", mse)
+# Add legend
+plt.legend()
+
+# Display the plot
+plt.show()
